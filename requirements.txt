@@ -1,0 +1,8 @@
+flask
+flask-cors
+paddlepaddle
+paddleocr
+opencv-python
+rapidocr_onnxruntime
+pytesseract
+Pillow

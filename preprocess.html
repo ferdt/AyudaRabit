@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Preprocesamiento - Lector OCR</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #64748b;
+            --accent-color: #f59e0b;
+            --background-color: #f8fafc;
+            --card-background: #ffffff;
+            --text-color: #1e293b;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            margin: 0;
+            color: var(--primary-color);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn.primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn.secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+        }
+
+        .controls-panel {
+            background: var(--card-background);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .preview-panel {
+            background: var(--card-background);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .image-compare {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .image-box {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .image-box img {
+            max-width: 100%;
+            height: auto;
+            max-height: 400px;
+            object-fit: contain;
+        }
+
+        .image-box h3 {
+            margin-top: 0;
+        }
+
+        .control-group {
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 1rem;
+        }
+
+        .control-group:last-child {
+            border-bottom: none;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .sub-control {
+            margin-left: 1.5rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input[type="number"] {
+            padding: 4px 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 80px;
+        }
+
+        .results {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .loading {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Test de Preprocesamiento</h1>
+            <a href="index.html" class="btn secondary">Volver al Lector</a>
+        </header>
+
+        <div class="main-grid">
+            <!-- Controls Sidebar -->
+            <aside class="controls-panel">
+                <div class="control-group">
+                    <input type="file" id="file-upload" accept="image/*" class="btn primary"
+                        style="width: 100%; box-sizing: border-box;">
+                </div>
+
+                <div class="control-group">
+                    <label>
+                        <input type="checkbox" id="opt-deskew" checked> Enderezar (Deskew)
+                    </label>
+                </div>
+
+                <div class="control-group">
+                    <label>
+                        <input type="checkbox" id="opt-gray" checked> Escala de Grises
+                    </label>
+                </div>
+
+                <div class="control-group">
+                    <label>
+                        <input type="checkbox" id="opt-threshold" checked> Binarización (Threshold)
+                    </label>
+                    <div class="sub-control">
+                        <label>Block Size:</label>
+                        <input type="number" id="opt-threshold-block" value="15" step="2" min="3">
+                    </div>
+                    <div class="sub-control">
+                        <label>C:</label>
+                        <input type="number" id="opt-threshold-c" value="5" step="1">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>
+                        <input type="checkbox" id="opt-sharpening"> Enfoque (Sharpen)
+                    </label>
+                </div>
+
+                <div class="control-group">
+                    <label>
+                        <input type="checkbox" id="opt-contrast" checked> Contraste
+                    </label>
+                    <div class="sub-control">
+                        <label>Alpha:</label>
+                        <input type="number" id="opt-contrast-alpha" value="1.5" step="0.1">
+                    </div>
+                    <div class="sub-control">
+                        <label>Beta:</label>
+                        <input type="number" id="opt-contrast-beta" value="-20" step="1">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>
+                        <input type="checkbox" id="opt-resize" checked> Redimensionar
+                    </label>
+                    <div class="sub-control">
+                        <label>Altura:</label>
+                        <input type="number" id="opt-resize-height" value="1024" step="100">
+                    </div>
+                </div>
+
+                <button id="btn-test" class="btn primary" style="width: 100%;">Probar Configuración</button>
+            </aside>
+
+            <!-- Preview Area -->
+            <main class="preview-panel">
+                <div class="image-compare">
+                    <div class="image-box">
+                        <h3>Original</h3>
+                        <img id="img-original" src="" alt="Sube una imagen">
+                    </div>
+                    <div class="image-box">
+                        <h3>Procesada</h3>
+                        <img id="img-processed" src="" alt="Resultado">
+                    </div>
+                </div>
+
+                <div class="stats">
+                    <strong>Tiempo de ejecución:</strong> <span id="execution-time">-</span> s
+                </div>
+
+                <h3>Texto Detectado (Raw)</h3>
+                <div id="text-result" class="results">...</div>
+            </main>
+        </div>
+    </div>
+
+    <script src="preprocess.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lector OCR de Tablas - Distancia y Velocidad</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Importar Tesseract.js desde CDN -->
+    <!-- Tesseract.js removed in favor of OCR.space API -->
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <header>
+        <h1>Lector de Tablas</h1>
+        <p>Captura una tabla de Distancia y Tiempo</p>
+    </header>
+
+    <main>
+        <!-- Sección de Cámara -->
+        <section id="camera-section">
+            <div class="video-container">
+                <video id="video" autoplay playsinline></video>
+                <canvas id="canvas" style="display: none;"></canvas>
+                <div class="overlay">
+                    <div class="scan-area"></div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <div class="control-group">
+                    <label for="ocr-engine">Motor OCR:</label>
+                    <select id="ocr-engine">
+                        <option value="rapid" selected>RapidOCR (Default)</option>
+                        <option value="paddle">PaddleOCR</option>
+                        <option value="tesseract">Tesseract</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>Orden Detectado:</label>
+                    <span id="detected-order" style="font-weight: bold; color: #2563eb;">-</span>
+                </div>
+                <button id="btn-camera" class="btn primary">Iniciar Cámara</button>
+                <button id="btn-capture" class="btn action" disabled>Capturar Foto</button>
+                <label for="file-upload" class="btn secondary">Subir Archivo</label>
+                <input type="file" id="file-upload" accept="image/*" multiple style="display: none;">
+
+                <div style="margin-top: 1rem;">
+                    <a href="preprocess.html" class="btn secondary" style="font-size: 0.9rem;">🛠️ Configurar
+                        Preprocesamiento</a>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Sección de Estado -->
+        <section id="status-section" class="hidden">
+            <div class="loader"></div>
+            <p id="status-text">Procesando imagen...</p>
+            <div class="progress-bar">
+                <div id="progress-fill" style="width: 0%"></div>
+            </div>
+        </section>
+
+        <!-- Sección de Resultados -->
+        <section id="results-section" class="hidden">
+            <div class="result-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <h2>Resultados</h2>
+                <span id="processing-time" style="color: #666; font-size: 0.9em;"></span>
+            </div>
+
+            <div class="debug-images-container">
+                <div>
+                    <h4>Imagen Original</h4>
+                    <img id="original-image" style="max-width: 100%; border: 1px solid #ccc;">
+                </div>
+                <div>
+                    <h4>Imagen Procesada (Server)</h4>
+                    <img id="processed-image-display" style="max-width: 100%; border: 1px solid #ccc;">
+                </div>
+            </div>
+
+            <div class="raw-text-container">
+                <h3>Texto Detectado (Raw)</h3>
+                <pre id="raw-text"></pre>
+            </div>
+
+            <div class="parsed-text-container">
+                <h3>Texto Parseado (JSON)</h3>
+                <pre id="parsed-text"
+                    style="background: #f0f0f0; padding: 10px; border-radius: 5px; overflow-x: auto;"></pre>
+            </div>
+
+            <div id="error-message" class="error hidden"></div>
+
+            <table id="results-table">
+                <thead>
+                    <tr>
+                        <th>Distancia (km)</th>
+                        <th>Tiempo</th>
+                        <th>Velocidad (km/h)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- JS will populate -->
+                </tbody>
+            </table>
+
+            <div class="changes-table-container" style="margin-top: 30px;">
+                <h2>Cambios de Velocidad</h2>
+                <table id="changes-table">
+                    <thead>
+                        <tr>
+                            <th>Distancia Desde (km)</th>
+                            <th>Distancia Hasta (km)</th>
+                            <th>Velocidad (km/h)</th>
+                            <th>Tiempo Acumulado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Rows inserted by JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <button id="btn-reset" class="btn secondary">Escanear Otra Vez</button>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
