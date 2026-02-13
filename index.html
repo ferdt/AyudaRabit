@@ -79,10 +79,48 @@
         </section>
 
         <!-- Sección de Resultados -->
-        <section id="results-section" class="hidden">
-            <div class="result-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <!-- Sección de Resultados (Standard) -->
+        <section id="results-section-standard" class="hidden">
+            <div class="result-header"
+                style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                 <h2>Resultados</h2>
-                <span id="processing-time" style="color: #666; font-size: 0.9em;"></span>
+                <div>
+                    <span style="font-weight: bold; margin-right: 10px;">Orden: <span id="detected-order-std"
+                            style="color: #2563eb;">-</span></span>
+                    <span id="processing-time-std" style="color: #666; font-size: 0.9em;"></span>
+                </div>
+            </div>
+
+            <div class="changes-table-container" style="margin-top: 30px;">
+                <h2>Cambios de Velocidad</h2>
+                <table id="changes-table-std">
+                    <thead>
+                        <tr>
+                            <th>Distancia Desde (km)</th>
+                            <th>Distancia Hasta (km)</th>
+                            <th>Velocidad (km/h)</th>
+                            <th>Tiempo Acumulado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Rows inserted by JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <button id="btn-reset-std" class="btn secondary">Escanear Otra Vez</button>
+        </section>
+
+        <!-- Sección de Resultados (Debug) -->
+        <section id="results-section-debug" class="hidden">
+            <div class="result-header"
+                style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <h2>Resultados (Depuración)</h2>
+                <div>
+                    <span style="font-weight: bold; margin-right: 10px;">Orden: <span id="detected-order-debug"
+                            style="color: #2563eb;">-</span></span>
+                    <span id="processing-time-debug" style="color: #666; font-size: 0.9em;"></span>
+                </div>
             </div>
 
             <div class="debug-images-container">
@@ -107,13 +145,15 @@
                     style="background: #f0f0f0; padding: 10px; border-radius: 5px; overflow-x: auto;"></pre>
             </div>
 
-            <div id="error-message" class="error hidden"></div>
+            <div id="error-message-debug" class="error hidden"></div>
 
-            <table id="results-table">
+            <h3>Tabla Completa</h3>
+            <table id="results-table-debug">
                 <thead>
                     <tr>
                         <th>Distancia (km)</th>
                         <th>Tiempo</th>
+                        <th>Diff Tiempo</th>
                         <th>Velocidad (km/h)</th>
                     </tr>
                 </thead>
@@ -124,7 +164,7 @@
 
             <div class="changes-table-container" style="margin-top: 30px;">
                 <h2>Cambios de Velocidad</h2>
-                <table id="changes-table">
+                <table id="changes-table-debug">
                     <thead>
                         <tr>
                             <th>Distancia Desde (km)</th>
@@ -139,7 +179,7 @@
                 </table>
             </div>
 
-            <button id="btn-reset" class="btn secondary">Escanear Otra Vez</button>
+            <button id="btn-reset-debug" class="btn secondary">Escanear Otra Vez</button>
         </section>
     </main>
 

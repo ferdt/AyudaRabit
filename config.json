@@ -10,7 +10,7 @@
         "apply_deskew": true,
         "apply_sharpening": false,
         "apply_resize": true,
-        "resize_height": 1024
+        "resize_height": 2048
     },
     "paddleocr": {
         "lang": "es",
