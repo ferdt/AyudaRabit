@@ -2,7 +2,8 @@ const video = document.getElementById('video');
 const canvas = document.getElementById('canvas');
 const btnCamera = document.getElementById('btn-camera');
 const btnCapture = document.getElementById('btn-capture');
-const fileUpload = document.getElementById('file-upload');
+const fileUploadStandard = document.getElementById('file-upload-standard');
+const fileUploadDebug = document.getElementById('file-upload-debug');
 const statusSection = document.getElementById('status-section');
 const statusText = document.getElementById('status-text');
 const progressFill = document.getElementById('progress-fill');
@@ -19,42 +20,24 @@ let processingQueue = [];
 let allProcessedData = [];
 let totalFilesToProcess = 0;
 let processedFilesCount = 0;
+let isDebugMode = false;
 
-// Local PaddleOCR Server logic
-async function processImageWithLocalServer(base64Image) {
-    const engineSelect = document.getElementById('ocr-engine');
-    const engine = engineSelect ? engineSelect.value : 'rapid';
-
-    // Collect Preprocessing Options
-    // Since we moved controls to another page, we rely on server-side config.json
-    // or we could implement a way to pass them via URL/Storage if persistence is needed.
-    // For now, let's allow server defaults.
-    const preprocessingOptions = {};
-
-    const response = await fetch("http://localhost:5000/ocr", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            image: base64Image,
-            ocr_engine: engine,
-            preprocessing: preprocessingOptions
-        })
-    });
-
-    if (!response.ok) {
-        throw new Error(`Server Error: ${response.statusText}`);
-    }
-
-    const result = await response.json();
-    return result;
-}
+// ... (processImageWithLocalServer remains same) ...
 
 // Event Listeners
 btnCamera.addEventListener('click', startCamera);
 btnCapture.addEventListener('click', capturePhoto);
-fileUpload.addEventListener('change', handleFileUpload);
+
+fileUploadStandard.addEventListener('change', (e) => {
+    isDebugMode = false;
+    handleFileUpload(e);
+});
+
+fileUploadDebug.addEventListener('change', (e) => {
+    isDebugMode = true;
+    handleFileUpload(e);
+});
+
 btnReset.addEventListener('click', resetApp);
 
 // Drag & Drop

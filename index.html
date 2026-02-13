@@ -47,8 +47,19 @@
                 </div>
                 <button id="btn-camera" class="btn primary">Iniciar Cámara</button>
                 <button id="btn-capture" class="btn action" disabled>Capturar Foto</button>
-                <label for="file-upload" class="btn secondary">Subir Archivo</label>
-                <input type="file" id="file-upload" accept="image/*" multiple style="display: none;">
+                <div class="upload-buttons" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <!-- Standard Upload -->
+                    <div>
+                        <label for="file-upload-standard" class="btn secondary">Subir Archivo</label>
+                        <input type="file" id="file-upload-standard" accept="image/*" multiple style="display: none;">
+                    </div>
+                    <!-- Debug Upload -->
+                    <div>
+                        <label for="file-upload-debug" class="btn secondary"
+                            style="background-color: #475569; font-size: 0.9em;">Subir (Depuración)</label>
+                        <input type="file" id="file-upload-debug" accept="image/*" multiple style="display: none;">
+                    </div>
+                </div>
 
                 <div style="margin-top: 1rem;">
                     <a href="preprocess.html" class="btn secondary" style="font-size: 0.9rem;">🛠️ Configurar
